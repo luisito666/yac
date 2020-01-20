@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-const socket_url = 'http://localhost:5000'
+const socket_url = 'http://192.168.0.10:5000'
 
 export const socket = io(socket_url);
 

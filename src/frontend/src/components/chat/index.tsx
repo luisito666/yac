@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 
 // Actions of this Component
 import * as chatActions from '../../actions/chatActions';
+import { Redirect } from 'react-router-dom';
 
 interface IProps {
     chatReducers: {mensaje: []};
@@ -72,9 +73,13 @@ class ChatComponent extends React.Component<IProps, Istate> {
     }
 
     render() {
+        console.log(this.props);
+        if (this.props.loginReducers.username === null) {
+            return <Redirect to="/"/>
+        }
         return (
             <div className="main-container">
-                <h1>
+                <h1 className="chat-title">
                     Mel Studio Chat
                 </h1>
 

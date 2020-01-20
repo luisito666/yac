@@ -8,13 +8,6 @@ interface Istate {
 
 class YouTubeLocal extends React.Component<any, Istate> {
 
-    constructor(props: any) {
-        super(props)
-        this.state = {
-            videoID: ''
-        }
-    }
-
     _onReady(event: any) {
         // access to player in all event handlers via event.target
         event.target.pauseVideo();
@@ -25,7 +18,7 @@ class YouTubeLocal extends React.Component<any, Istate> {
             height: '206',
             width: '256',
             playerVars: { // https://developers.google.com/youtube/player_parameters
-              autoplay: 1
+              autoplay: 0
             }
           };
         return (

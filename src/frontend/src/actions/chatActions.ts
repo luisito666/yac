@@ -1,4 +1,5 @@
-import {MENSAJE} from '../types/chatTypes';
+import { MENSAJE } from '../types/chatTypes';
+import { INGRESAR } from '../types/loginTypes'
 import { socket } from '../socket'
 
 export const Broadcast = (mensaje: any, usuario: any) => (dispatch: any) => {
@@ -32,6 +33,17 @@ export const Broadcast = (mensaje: any, usuario: any) => (dispatch: any) => {
 }
 
 export const Listen = () => (dispatch: any) => {
+
+    const user = localStorage.getItem('user');
+    
+    if (user) {
+        dispatch({
+            type: INGRESAR,
+            payload: JSON.parse(user)
+        })
+    }
+
+
     socket.on('mensaje', (payload: any) => {
         console.log(payload);
         dispatch({
