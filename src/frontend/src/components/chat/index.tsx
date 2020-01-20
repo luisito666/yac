@@ -50,6 +50,9 @@ class ChatComponent extends React.Component<IProps, Istate> {
     handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {        
         if (e.key === 'Enter') {
             // Update the state
+            if (this.state.mensaje === '') {
+                return
+            }
             this.props.Broadcast(this.state.mensaje, this.props.loginReducers.username);
             this.setState({mensaje: ''});
         }
