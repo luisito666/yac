@@ -10,6 +10,6 @@ export default (state = INITIAL_STATE, action: Action) => {
     switch(action.type){
         case SIGNIN:
             return {...state, username: action.payload}
-        default: return state
+        default: return state;
     }
 }

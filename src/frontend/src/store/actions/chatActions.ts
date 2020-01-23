@@ -1,4 +1,5 @@
 import { MESSAGE, MESSAGES } from '../types/chatTypes';
+import { USERLOAD } from '../types/usersTypes';
 import { Message } from '../../models'
 import { socket } from '../../sockets';
 import axios from 'axios';
@@ -40,13 +41,36 @@ export const Listen = () => (dispatch: any) => {
     
     socket.removeAllListeners();
 
+    socket.emit('get-users');
+
+    if (socket.disconnected) {
+        socket.connect();
+    }
+
     socket.on('messages', (payload: any) => {
         console.log(payload);
         dispatch({
             type: MESSAGE,
             payload
         })
+    });
+
+    socket.on('active-users', (payload: any) => {
+        console.log(payload);
+        dispatch({
+            type: USERLOAD,
+            payload
+        });
+    });
+
+    socket.on('get-users', (payload: any) => {
+        console.log(payload);
+        dispatch({
+            type: USERLOAD,
+            payload
+        });
     })
+
 }
 
 export const Close = () => () => {

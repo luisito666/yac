@@ -1,6 +1,6 @@
 
 import { Router, Request, Response } from 'express';
-import { messages } from '../sockets/sockets';
+import { messages, usersOnline } from '../sockets/sockets';
 // import Server from '../clases/server'
 
 const router = Router();
@@ -17,6 +17,20 @@ router.get('/messages', (  req: Request, res: Response ) => {
 
     
 });
+
+router.get('/user/:username', (  req: Request, res: Response ) => {
+
+    let username = req.params.username;
+
+    console.log(username);
+
+    res.json({
+        ok: true,
+        user: usersOnline.getUserByName(username)
+    });
+
+    
+})
 
 
 export default router;

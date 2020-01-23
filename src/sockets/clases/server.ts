@@ -32,7 +32,15 @@ export default class Server {
         console.log('Start to listen sockets..')
         this.io.on('connect', client => {
             // Register functions
-            socket.mensaje(client, this.io);
+            socket.connectUser(client, this.io);
+
+            socket.configUser(client, this.io);
+
+            socket.getUsers(client, this.io);
+
+            socket.message(client, this.io);
+
+            socket.disconnectUser(client, this.io);
 
         });
     }

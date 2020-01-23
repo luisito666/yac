@@ -3,6 +3,7 @@ import './index.css';
 
 // Local YouTube
 import YouTubeLocal from '../youtube';
+import UserComponent from '../users';
 
 // Models
 import { Message } from '../../models';
@@ -94,7 +95,7 @@ class ChatComponent extends React.Component<IProps, Istate> {
     }
 
     render() {
-        if (this.props.loginReducers.username === null) {
+        if (this.props.loginReducers.username === null || this.props.loginReducers.username === '') {
             return <Redirect to="/"/>
         }
         return (
@@ -131,6 +132,14 @@ class ChatComponent extends React.Component<IProps, Istate> {
                             className="input-chat form-control mb-2" 
                             placeholder="Enviar mensaje" 
                             required/>
+                </div>
+
+                <UserComponent/>
+
+                <div className="mt-2">
+                    <button onClick={this.handleLogOut.bind(this)} className="btn btn-danger btn-block btn-custom">
+                        Logout
+                    </button>
                 </div>
 
             </div>

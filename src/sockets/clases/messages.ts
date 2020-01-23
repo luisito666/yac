@@ -1,7 +1,7 @@
 import { Message } from './message';
 
 export class Messages {
-    public messages: Message[] = [];
+    private messages: Message[] = [];
 
     constructor(){}
 
