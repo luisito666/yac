@@ -4,26 +4,40 @@ import './index.css';
 // Local YouTube
 import YouTubeLocal from '../youtube';
 
+// Models
+import { Message } from '../../models';
+
 // Scroll
 import { animateScroll } from "react-scroll";
+import { bindActionCreators } from 'redux';
 
 // Conect Component to Store
 import { connect } from 'react-redux';
 
 // Actions of this Component
-import * as chatActions from '../../actions/chatActions';
+import * as chatActions from '../../store/actions/chatActions';
+import * as loginActions from '../../store/actions/loginActions';
+
 import { Redirect } from 'react-router-dom';
 
 interface IProps {
-    chatReducers: {mensaje: []};
+    chatReducers: {messages: []};
     loginReducers: {username: ''};
-    Broadcast: (mensaje: any, usuario: any) => void;
-    Listen: () => void;
-    username: string;
+    actions: {
+        chatActions: {
+            Broadcast: (mensaje: any, usuario: any) => void;
+            Listen: () => void;
+            LoadMessages: () => void;    
+        },
+        loginActions: {
+            LoadUserStorage: () => void;
+            LogOut: () => void;
+        }
+    }
 }
 
 interface Istate {
-    mensaje: string;
+    message: string;
 }
 
 
@@ -32,14 +46,17 @@ class ChatComponent extends React.Component<IProps, Istate> {
     constructor(props: IProps) {
         super(props)
         this.state = {
-            mensaje: ''
+            message: ''
         }
+        
     }
 
     componentDidMount() {
         // listen Sockets
-        this.props.Listen();
-
+        this.props.actions.chatActions.Listen();
+        this.props.actions.chatActions.LoadMessages();
+        this.props.actions.loginActions.LoadUserStorage();
+        
         // Scroll
         this.scrollToBottom();
     }
@@ -51,19 +68,23 @@ class ChatComponent extends React.Component<IProps, Istate> {
     handleKeyPress(e: React.KeyboardEvent<HTMLInputElement>) {        
         if (e.key === 'Enter') {
             // Update the state
-            if (this.state.mensaje === '') {
+            if (this.state.message === '') {
                 return
             }
-            this.props.Broadcast(this.state.mensaje, this.props.loginReducers.username);
-            this.setState({mensaje: ''});
+            this.props.actions.chatActions.Broadcast(this.state.message, this.props.loginReducers.username);
+            this.setState({message: ''});
         }
     }
 
     handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { value } = event.target;
         this.setState({
-            mensaje: value
+            message: value
         });
+    }
+
+    handleLogOut() {
+        this.props.actions.loginActions.LogOut();
     }
 
     scrollToBottom() {
@@ -73,7 +94,6 @@ class ChatComponent extends React.Component<IProps, Istate> {
     }
 
     render() {
-        console.log(this.props);
         if (this.props.loginReducers.username === null) {
             return <Redirect to="/"/>
         }
@@ -90,22 +110,22 @@ class ChatComponent extends React.Component<IProps, Istate> {
 
                     <div className="app-mensajes" id="app-mensajes">
 
-                        {this.props.chatReducers.mensaje.map((element: any, index: number) => (
-                        <div className={(this.props.loginReducers.username === element.de ? 'text-right': '') } key={index}>
-                            <span className={"badge " + (this.props.loginReducers.username === element.de ? 'badge-primary': 'badge-success')}>
-                                { element.de}    
-                            </span>
+                        {this.props.chatReducers.messages.map((element: Message, index: number) => (
+                        <div className={(this.props.loginReducers.username === element.from ? 'text-right': '') } key={index}>
+                            <span className="badge badge-secondary">{element.date}</span> - <span className={"badge " + (this.props.loginReducers.username === element.from ? 'badge-primary': 'badge-success')}>
+                                { element.from}    
+                            </span> 
                             
                             { element.youtube ? <YouTubeLocal videoID={element.youtube}/> : null }
 
-                            { element.mensaje ? <p> {element.mensaje } </p> : null }  
+                            { element.message ? <p> {element.message } </p> : null }  
                         </div>
                         ))}
                     </div>
                         <input 
                             onKeyPress={this.handleKeyPress.bind(this)}
                             onChange={e => this.handleChange(e)}   
-                            value={this.state.mensaje}                         
+                            value={this.state.message}                         
                             name="mensaje"
                             type="text"
                             className="input-chat form-control mb-2" 
@@ -125,5 +145,14 @@ export const mapStateToProps = ({chatReducers, loginReducers }: {chatReducers: a
     }
 }
 
+export const mapDispatchToProps = (dispatch: any) => {
+    return {
+        actions: {
+            loginActions: bindActionCreators(loginActions, dispatch),
+            chatActions: bindActionCreators(chatActions, dispatch)
+        }
+    };
+}
+
 // export default ChatComponent;
-export default connect(mapStateToProps, chatActions)(ChatComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(ChatComponent);

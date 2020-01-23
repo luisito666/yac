@@ -1,17 +1,14 @@
-import { INGRESAR } from '../types/loginTypes'
+import { SIGNIN } from '../types/loginTypes';
+import { Action } from '../../models';
+
 
 const INITIAL_STATE = {
     username: null
 }
 
-interface Action {
-    type: string;
-    payload: any
-}
-
 export default (state = INITIAL_STATE, action: Action) => {
     switch(action.type){
-        case INGRESAR:
+        case SIGNIN:
             return {...state, username: action.payload}
         default: return state
     }

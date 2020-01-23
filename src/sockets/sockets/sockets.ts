@@ -1,22 +1,29 @@
 import SocketIO from 'socket.io';
 import { Socket } from 'socket.io';
+import { Messages } from '../clases/messages';
+import { Message } from '../clases/message';
 
+export const messages = new Messages();
 
 export const mensaje = (client: Socket, io: SocketIO.Server) => {
-    client.on('mensaje', (payload: {mensaje: string, de: string}) => {
+    client.on('messages', (payload: Message) => {
+
+        console.log(payload);
         
-        if(payload.mensaje.startsWith('/youtube')){
-            const tube = payload.mensaje.split(' ');
-            const new_payload = {
-                de: payload.de,
-                mensaje: null,
-                youtube: tube[1]
+        if(payload.message.startsWith('/youtube')){
+            const tube = payload.message.split(' ');
+            const new_payload: Message = {
+                from: payload.from,
+                message: null,
+                youtube: tube[1],
+                date: payload.date
             }
-            client.broadcast.emit('mensaje', new_payload)
+            client.broadcast.emit('messages', new_payload)
+            messages.addMessage(new_payload)
             return
         }
-        
-        client.broadcast.emit('mensaje', {...payload, youtube: null})
+        messages.addMessage(payload)
+        client.broadcast.emit('messages', {...payload, youtube: null})
     })
     
 }   

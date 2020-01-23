@@ -1,5 +1,5 @@
 import Server from './clases/server';
-import router from './router';
+import router from './routes/router';
 // Thirt party APPS
 import bodyParser from 'body-parser';
 import cors from 'cors';

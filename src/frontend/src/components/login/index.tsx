@@ -7,10 +7,12 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 // Actions of this Component
-import * as loginActions from '../../actions/loginActions';
+import * as loginActions from '../../store/actions/loginActions';
 
 interface IProps {
-    Ingresar: (payload: any) => void,
+    loginReducers: {username: ''};
+    Signin: (payload: any) => void;
+    LoadUserStorage: () => void;
     username: string;
 }
 
@@ -19,6 +21,10 @@ interface Istate {
 }
 
 class LoginComponent extends React.Component<IProps, Istate> {
+
+    componentDidMount() {
+        this.props.LoadUserStorage();
+    }
 
     handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { value } = event.target;
@@ -29,13 +35,13 @@ class LoginComponent extends React.Component<IProps, Istate> {
 
     handleForm(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        this.props.Ingresar(this.state.username);
+        this.props.Signin(this.state.username);
     }
 
     render() {      
         if( this.props.username ) {
             return <Redirect to="/chat"/> 
-        }  
+        } 
         return (
             <div className="second-body">
                 <div className="custom-width text-center">
@@ -72,8 +78,8 @@ class LoginComponent extends React.Component<IProps, Istate> {
 
 }
 
-const mapStateToProps = (reducers: any) => {
-    return reducers.loginReducers
+const mapStateToProps = ({loginReducers}: {loginReducers: any}) => {
+    return loginReducers
 }
 
 export default connect(mapStateToProps, loginActions)(LoginComponent);
